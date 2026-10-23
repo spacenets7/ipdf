@@ -203,3 +203,34 @@ No successful live authenticated flow is claimed yet. The final navigation build
 includes labelled batch uploads and an Ask-about-this-section action in walking
 mode. Repository visibility was restored to public at the user's explicit request
 after its private state prevented Render from fetching source. Hosting stayed free.
+
+### Authenticated live workflow completed
+
+After the user signed in, the pre-deployment OAuth request had expired. Starting
+a fresh sign-in request reused the existing GitHub session and reached the private
+library as spacenets7 without another credential prompt.
+
+- Uploaded only page one of Attention Is All You Need through the signed-in UI,
+  using beginner level, basic Python background, quick depth and browser voice.
+  Generation, prerequisite preparation and one tutor question all reached ready.
+- Downloaded JSON validates against the current Pydantic iPDF 0.1 schema: one
+  section, five glossary entries, three flashcards, zero charts and one narration.
+  The page has no reliable table; the edition explicitly reports omitted charts.
+- Learning path contains nine source-linked concepts. Marking one familiar
+  persisted after reload. The supported Transformer architecture answer includes
+  an exact source quote, page reference, model and prompt version; conversation
+  history also persisted after navigation and reload.
+- Browser narration reported PLAYING / BROWSER VOICE. Walking mode exposes large
+  controls, simpler replay, source access and the selected-section tutor link.
+  At 390px, viewport, document client and scroll widths all measured 390px.
+  Physical phone playback and lock-screen behavior remain unverified.
+- Authenticated HTML and JSON downloads succeeded. The 402,609-byte HTML embeds
+  the original PDF. Anonymous requests for this private viewer, JSON and HTML
+  export returned 404; the anonymous library API returned 401.
+- This check used browser speech and consumed no ElevenLabs synthesis credits.
+  Hosted generation and grounding were real; no complete billing total is claimed.
+  Local proof is in ignored data/validation/private-library-ready.png,
+  private-tutor-390.png and private-walking-390.png. The viewport override was cleared.
+
+These results cover a bounded one-page authenticated workflow, not a full-paper
+three-paper/three-level run or guaranteed overnight execution on free hosting.
