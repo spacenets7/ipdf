@@ -9,7 +9,7 @@
       const actions=make('div',null,'actions');actions.append(link('Read',`/ipdf/${p.id}`),link('Learn & ask',`/tutor/${p.id}`),link('Export',`/ipdf/${p.id}/export`));
       const share=make('button',p.public?'Make private':'Share by link','small-button');share.addEventListener('click',async()=>{const r=await fetch(`/api/papers/${p.id}/sharing`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({public:!p.public})});if(r.ok)load();});actions.append(share);card.append(actions);papers.append(card);});
     if(!data.jobs.length)queue.append(make('p','No papers preparing. You can close the tab after uploading; check progress here later.'));
-    data.jobs.slice(0,20).forEach(j=>{const row=make('div',null,'job-row');row.append(make('span',`${j.kind} · ${j.message} · ${j.progress}%`),make('span',j.state,'state-badge'));
+    data.jobs.slice(0,20).forEach(j=>{const row=make('div',null,'job-row');row.append(make('span',`${j.label||j.kind} · ${j.message} · ${j.progress}%`),make('span',j.state,'state-badge'));
       if(j.error)row.append(make('p',j.error));
       if(j.state==='error'){const retry=make('button','Retry','small-button');retry.addEventListener('click',async()=>{await fetch(`/api/jobs/${j.id}/retry`,{method:'POST'});load();});row.append(retry);}queue.append(row);});
   }catch(error){document.querySelector('#library-error').textContent=error.message;}}

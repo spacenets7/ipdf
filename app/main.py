@@ -114,7 +114,8 @@ async def create(request:Request,pdf: Annotated[UploadFile|None,File()]=None,
         finally:
             await pdf.close()
     profile=ReaderProfile(background=background,goal=goal,minutes=int(minutes),voice=voice)
-    job=jobs.enqueue('create',orchestrate.create,upload_path,arxiv_id,level,profile.model_dump(),user['id'],owner_id=user['id'])
+    label=arxiv_id or (pdf.filename or 'Uploaded paper')
+    job=jobs.enqueue('create',orchestrate.create,upload_path,arxiv_id,level,profile.model_dump(),user['id'],owner_id=user['id'],label=label)
     return {'job_id':job,'status_url':f'/ipdf/status/{job}'}
 
 @app.get('/ipdf/status/{job_id}')

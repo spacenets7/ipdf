@@ -18,10 +18,10 @@ def update(job,state='running',progress=0,message='',result_id=None,result=None,
         (state,progress,message,result_id,json.dumps(result) if result is not None else None,error,job))
 
 
-def enqueue(kind,task,*args,owner_id=None):
+def enqueue(kind,task,*args,owner_id=None,label=''):
     job=uuid.uuid4().hex
-    db.execute('INSERT INTO jobs(id,kind,state,message,owner_id,args_json) VALUES(?,?,?,?,?,?)',
-        (job,kind,'queued','Waiting to begin',owner_id,json.dumps(args)))
+    db.execute('INSERT INTO jobs(id,kind,state,message,owner_id,args_json,label) VALUES(?,?,?,?,?,?,?)',
+        (job,kind,'queued','Waiting to begin',owner_id,json.dumps(args),label[:200]))
     _pool.submit(_execute,job,task,args)
     return job
 

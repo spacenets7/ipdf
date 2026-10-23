@@ -25,7 +25,7 @@ def list_library(request:Request):
         data=json.loads(row['json'])
         papers.append({'id':row['id'],'title':data['meta']['title'],'level':data['meta']['level'],'public':bool(row['public']),
             'notes':data.get('issues',[]),'narration':len(data.get('narration',[]))})
-    queue=db.query('SELECT id,kind,state,progress,message,error,result_id,created_at FROM jobs WHERE owner_id=? ORDER BY created_at DESC LIMIT 100',(user['id'],))
+    queue=db.query('SELECT id,kind,label,state,progress,message,error,result_id,created_at FROM jobs WHERE owner_id=? ORDER BY created_at DESC LIMIT 100',(user['id'],))
     return {'papers':papers,'jobs':queue}
 
 class Sharing(BaseModel):

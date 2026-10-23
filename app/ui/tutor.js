@@ -4,6 +4,9 @@
   const status=message=>$('#tutor-status').textContent=message;
   const node=(tag,text,cls)=>{const n=document.createElement(tag);if(text)n.textContent=text;if(cls)n.className=cls;return n;};
   let lastAnswer=null,recognition=null,questionPending=false;
+  const requested=new URLSearchParams(location.search).get('section');
+  if([...$('#tutor-section').options].some(option=>option.value===requested))$('#tutor-section').value=requested;
+  $('#return-paper').href=`/ipdf/${id}#${encodeURIComponent($('#tutor-section').value)}`;
   const audio=$('#answer-audio'),speech=window.speechSynthesis;
   function interrupt(){audio.pause();speech?.cancel();}
   function play(answer){

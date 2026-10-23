@@ -107,7 +107,7 @@ def init_db():
         if 'run_id' not in columns:
             conn.execute('ALTER TABLE usage ADD COLUMN run_id TEXT')
         columns={row['name'] for row in conn.execute('PRAGMA table_info(jobs)')}
-        for name,definition in [('owner_id','TEXT'),('args_json','TEXT'),('attempts','INTEGER NOT NULL DEFAULT 0')]:
+        for name,definition in [('owner_id','TEXT'),('args_json','TEXT'),('attempts','INTEGER NOT NULL DEFAULT 0'),('label',"TEXT NOT NULL DEFAULT ''")]:
             if name not in columns:
                 conn.execute(f'ALTER TABLE jobs ADD COLUMN {name} {definition}')
         # Only the deliberately published, author-uploaded demo stays public.
