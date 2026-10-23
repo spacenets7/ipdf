@@ -10,15 +10,15 @@ from app.config import settings
 from app.extract import extract_document
 from app.ingest.arxiv import fetch_pdf
 from app.generate.pipeline import build
-from app.generate.common import VERSIONS
+from app.generate.common import VERSIONS,reader_context
 from app.llm import run_id
 from app.schema import IPDF
 
 
-def cache_key(paper_id,level):
+def cache_key(paper_id,level,reader=None):
     fast,deep=settings.backend(),settings.backend('DEEP')
     return hashlib.sha256(json.dumps(['ingest/0.1.1',paper_id,level,fast.model,fast.base_url,
-        deep.model,deep.base_url,bool(fast.api_key and fast.model),VERSIONS],sort_keys=True).encode()).hexdigest()
+        deep.model,deep.base_url,bool(fast.api_key and fast.model),VERSIONS,reader or {}],sort_keys=True).encode()).hexdigest()
 
 
 def load_document(document_id):
@@ -26,7 +26,7 @@ def load_document(document_id):
     if not row:
         return None
     document=IPDF.model_validate_json(row['json'])
-    document.meta.tts_provider=settings.tts_provider if settings.tts_provider in ('elevenlabs','browser') else 'browser'
+    document.meta.tts_provider=document.meta.reader.voice
     return document
 
 
@@ -47,8 +47,9 @@ def portable_document(document):
     return IPDF.model_validate(document.model_dump())
 
 
-def create(job,upload_path,arxiv_id,level):
+def create(job,upload_path,arxiv_id,level,reader=None):
     token=run_id.set(job)
+    profile_token=reader_context.set(reader or {})
     try:
         jobs.update(job,progress=5,message='Opening the source paper')
         metadata={}
@@ -59,7 +60,7 @@ def create(job,upload_path,arxiv_id,level):
             content=Path(upload_path).read_bytes()
         jobs.update(job,progress=15,message='Extracting source text, tables and figures')
         paper=extract_document(content,metadata)
-        key=cache_key(paper.paper_id,level)
+        key=cache_key(paper.paper_id,level,reader)
         cached=db.query('SELECT id,json FROM ipdfs WHERE cache_key=?',(key,),one=True)
         needs_retry=bool(cached and settings.backend().api_key and settings.backend().model and
             any(issue['plugin']=='configuration' for issue in json.loads(cached['json']).get('issues',[])))
@@ -84,6 +85,7 @@ def create(job,upload_path,arxiv_id,level):
         actual=db.query('SELECT id FROM ipdfs WHERE cache_key=?',(key,),one=True)['id']
         jobs.update(job,'ready',100,'Your interactive paper is ready',result_id=actual)
     finally:
+        reader_context.reset(profile_token)
         run_id.reset(token)
         if upload_path:
             Path(upload_path).unlink(missing_ok=True)
@@ -103,7 +105,7 @@ def synthesize(job,document_id,section_id,simpler):
     if not narration:
         raise ValueError('This section does not have narration.')
     jobs.update(job,progress=20,message='Preparing section audio')
-    result=create_audio(narration.simpler_script if simpler else narration.script)
+    result=create_audio(narration.simpler_script if simpler else narration.script,provider=document.meta.reader.voice)
     if result.get('audio_url'):
         with _locks_guard:
             lock=_document_locks.setdefault(document_id,threading.Lock())

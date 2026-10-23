@@ -32,6 +32,7 @@
     if (selected === 'upload' && (!file || file.size > 25_000_000)) { error.textContent = 'Choose a PDF under 25 MB.'; error.hidden = false; return; }
     if (selected === 'arxiv' && !document.querySelector('#arxiv-id').value.trim()) { error.textContent = 'Enter an arXiv ID or choose a PDF to upload.'; error.hidden = false; return; }
     const body = new FormData();
+    for (const key of ['background','goal','minutes','voice']) body.append(key,form.elements[key].value);
     body.append('level', form.querySelector('[name=level]:checked').value);
     if (selected === 'upload') body.append('pdf', file); else body.append('arxiv_id', document.querySelector('#arxiv-id').value);
     button.disabled = true;

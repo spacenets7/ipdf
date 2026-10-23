@@ -84,7 +84,12 @@
       else {notify(result.message||'Using your browser voice.');browserPlay(simpler?segment.simpler_script:segment.script,token);}
     }catch{if(token===epoch){notify('Hosted audio is unavailable. Using your browser voice.');browserPlay(simpler?segment.simpler_script:segment.script,token);}}
   }
+  const resumeKey=`ipdf-resume:${paper.meta.paper_id}:${paper.meta.level}`;
+  try {const saved=JSON.parse(localStorage.getItem(resumeKey)||'null');if(saved){const found=ordered.findIndex(n=>n.section_id===saved.section);if(found>=0)index=found;if([.75,1,1.25,1.5].includes(saved.speed))$('#playback-speed').value=String(saved.speed);}}catch{}
+  function savePosition(){try{localStorage.setItem(resumeKey,JSON.stringify({section:current()?.section_id,speed:speed()}));}catch{}}
   function start(useSimpler=false) {
+    useSimpler=useSimpler || Boolean(window.ipdfViewer.learning?.simpler && current()?.simpler_script);
+    savePosition();
     if(!ordered.length){notify('This edition has no generated narration yet. Source pages are still available to read.');return;}
     if(useSimpler&&!current().simpler_script){notify('This edition does not include a simpler replay for this section.');return;}
     stop();simpler=useSimpler;const token=epoch;selected();
@@ -119,5 +124,5 @@
     Object.entries(actions).forEach(([action,handler])=>{try{navigator.mediaSession.setActionHandler(action,handler);}catch{}});
   }
   if(!ordered.length){$('#listening-note').textContent='No narration in this edition. All extracted source pages remain readable.';state('SOURCE-ONLY EDITION');}
-  window.addEventListener('pagehide',()=>{if(synth)synth.cancel();});
+  window.addEventListener('pagehide',()=>{savePosition();if(synth)synth.cancel();});
 })();

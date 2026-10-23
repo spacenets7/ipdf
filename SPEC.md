@@ -106,3 +106,18 @@ no LLM work. `Explain simpler` selects the existing simpler narration.
 Generation cache identity: `(paper content hash, level, FAST model, DEEP model,
 prompt versions)`. A provider failure is recorded, never presented as successful
 AI output. Source-only documents remain valid and readable without credentials.
+
+
+## Optional reader and assessment extensions
+
+`meta.reader` stores `background` (max 300 characters), `goal` (`understand`,
+`implement`, `critique`), `minutes` (5, 15, 30), and `voice` (`browser`,
+`elevenlabs`). Existing 0.1 editions default to a 15-minute understanding profile.
+Minutes describe target explanation depth, not measured audio duration.
+
+Flashcards may include `choices` (2–4 distinct strings) and `correct_index`
+(zero-based). The index must be in range; omitted choices require a null index.
+The source-grounding pass checks the question, answer, options and explanation.
+These fields remain portable in JSON and HTML. Browser learning history is
+separate from the document and can be exported independently. Answer keys are
+inspectable client-side; these checks are learning aids, not secure examinations.

@@ -158,6 +158,28 @@
         "section_id": {
           "title": "Section Id",
           "type": "string"
+        },
+        "choices": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 4,
+          "title": "Choices",
+          "type": "array"
+        },
+        "correct_index": {
+          "anyOf": [
+            {
+              "maximum": 3,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Correct Index"
         }
       },
       "required": [
@@ -320,6 +342,9 @@
           ],
           "title": "Tts Provider",
           "type": "string"
+        },
+        "reader": {
+          "$ref": "#/$defs/ReaderProfile"
         }
       },
       "required": [
@@ -444,6 +469,48 @@
         "generated_at"
       ],
       "title": "Provenance",
+      "type": "object"
+    },
+    "ReaderProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "background": {
+          "default": "",
+          "maxLength": 300,
+          "title": "Background",
+          "type": "string"
+        },
+        "goal": {
+          "default": "understand",
+          "enum": [
+            "understand",
+            "implement",
+            "critique"
+          ],
+          "title": "Goal",
+          "type": "string"
+        },
+        "minutes": {
+          "default": 15,
+          "enum": [
+            5,
+            15,
+            30
+          ],
+          "title": "Minutes",
+          "type": "integer"
+        },
+        "voice": {
+          "default": "browser",
+          "enum": [
+            "browser",
+            "elevenlabs"
+          ],
+          "title": "Voice",
+          "type": "string"
+        }
+      },
+      "title": "ReaderProfile",
       "type": "object"
     },
     "Section": {

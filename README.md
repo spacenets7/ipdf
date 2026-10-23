@@ -77,6 +77,35 @@ transport failures retry and fall back to FAST; schema-invalid outputs are dropp
 after at most two retries. Actual provider/model metadata accompanies each block.
 Keys remain on the server and are absent from JSON/HTML exports.
 
+## Personalized learning and listening
+
+Choose a reader level, prior background, goal (understand / implement / critique),
+and a 5 / 15 / 30-minute explanation-depth target. The target guides generation;
+it is not a guaranteed audio duration. Every preference is stored in the edition,
+and generation caches distinguish reader profiles and hosted endpoints.
+
+Study cards can include grounded multiple-choice checks. After a missed answer,
+the next narration uses the already-generated simpler script. Quiz attempts,
+section-level playback position and speed stay in browser storage. Export or
+reset learning history in the reader. This is personal adaptation, not model
+training or proof of improved comprehension. `python scripts/evaluate_learning.py
+ipdf-learning.json` reports first/latest outcomes for repeated questions; a
+controlled evaluation is still needed before claiming learning gains.
+
+Choose browser speech to conserve credits, or ElevenLabs for on-demand cached
+MP3 narration. `TTS_CHARACTER_BUDGET` defaults to 8,000 successful synthesized
+characters per database, and `MAX_LLM_CALLS_PER_JOB` defaults to 60 successful
+responses (grounding and repairs included). These are usage controls, not dollar
+spending guarantees. `MAX_CREATE_JOBS_PER_DAY` defaults to 20. Provider-side limits
+are authoritative. A free Render restart clears its ephemeral database and these
+local counters; do not rely on them as durable account-wide limits.
+
+For Render API deployment, add `RENDER_API_KEY` to the ignored local `.env` and
+run `python scripts/deploy_render.py --create`. It selects the free Docker plan,
+reuses a matching existing service, and forwards only the app configuration
+allowlist. It never sends the Render management key to the app. If the key sees
+multiple workspaces, set `RENDER_OWNER_ID`. Run without `--create` to inspect status.
+
 ## Three layers
 
 ```mermaid

@@ -16,7 +16,7 @@ def test_glossary_metadata_and_source_reference():
         blocks=glossary(section,'beginner','paper')
     assert blocks[0].page==2
     assert blocks[0].generated_by.model=='hosted-test'
-    assert blocks[0].generated_by.prompt_version=='glossary/0.1.0'
+    assert blocks[0].generated_by.prompt_version=='glossary/0.2.0'
 
 
 def test_chart_values_come_from_parser_not_model():

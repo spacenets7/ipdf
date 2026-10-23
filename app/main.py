@@ -3,6 +3,7 @@ import json
 import logging
 import re
 import uuid
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated
@@ -13,7 +14,8 @@ from app import db,jobs,orchestrate
 from app.config import settings,ROOT
 from app.ingest.arxiv import normalize_id
 from app.render.pages import env,viewer,export_html
-from app.schema import Level
+from app.schema import Level,ReaderProfile
+from typing import Literal
 
 logging.basicConfig(level=logging.INFO,format='%(asctime)s %(levelname)s %(name)s %(message)s')
 
@@ -54,9 +56,16 @@ def spec():
 
 @app.post('/ipdf/create',status_code=202)
 async def create(pdf: Annotated[UploadFile|None,File()]=None,
-                 arxiv_id: Annotated[str,Form()]='',level: Annotated[Level,Form()]='beginner'):
+                 arxiv_id: Annotated[str,Form()]='',level: Annotated[Level,Form()]='beginner',
+                 background: Annotated[str,Form(max_length=300)]='',
+                 goal: Annotated[Literal['understand','implement','critique'],Form()]='understand',
+                 minutes: Annotated[Literal['5','15','30'],Form()]='15',
+                 voice: Annotated[Literal['browser','elevenlabs'],Form()]='browser'):
     if bool(pdf)==bool(arxiv_id.strip()):
         raise HTTPException(422,'Choose exactly one source: PDF upload or arXiv ID.')
+    daily=db.query("SELECT COUNT(*) AS n FROM jobs WHERE kind='create' AND date(created_at)=date('now')",one=True)['n']
+    if daily>=int(os.getenv('MAX_CREATE_JOBS_PER_DAY','20')):
+        raise HTTPException(429,'Today’s paper generation allowance is reached. Saved editions and exports remain available.')
     active=db.query("SELECT COUNT(*) AS n FROM jobs WHERE state IN ('queued','running')",one=True)['n']
     if active>=8:
         raise HTTPException(429,'The reading room is busy. Wait for an active paper to finish.')
@@ -88,7 +97,8 @@ async def create(pdf: Annotated[UploadFile|None,File()]=None,
             raise
         finally:
             await pdf.close()
-    job=jobs.enqueue('create',orchestrate.create,upload_path,arxiv_id,level)
+    profile=ReaderProfile(background=background,goal=goal,minutes=int(minutes),voice=voice)
+    job=jobs.enqueue('create',orchestrate.create,upload_path,arxiv_id,level,profile.model_dump())
     return {'job_id':job,'status_url':f'/ipdf/status/{job}'}
 
 @app.get('/ipdf/status/{job_id}')

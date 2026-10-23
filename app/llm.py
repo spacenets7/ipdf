@@ -4,6 +4,7 @@ import json
 import logging
 import re
 import time
+import os
 from dataclasses import dataclass
 from typing import Generic, TypeVar
 from contextvars import ContextVar
@@ -84,6 +85,10 @@ def chat_json(schema: type[T], prompt: str, *, backend='FAST', purpose='blocks',
         for attempt in range(3):
             content=''
             try:
+                if run_id.get():
+                    count=db.query("SELECT COUNT(*) AS n FROM usage WHERE kind='llm' AND run_id=?",(run_id.get(),),one=True)['n']
+                    if count>=int(os.getenv('MAX_LLM_CALLS_PER_JOB','60')):
+                        raise ProviderUnavailable('The generation call budget for this edition is reached. Existing blocks are preserved.')
                 args = dict(model=chosen.model,messages=messages,temperature=0.2,max_tokens=settings.llm_max_tokens)
                 if json_mode:
                     args['response_format'] = {'type':'json_object'}

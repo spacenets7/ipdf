@@ -22,6 +22,13 @@ def parse_number(cell):
     return value if math.isfinite(value) else None
 
 
+class ReaderProfile(Contract):
+    background: str=Field(default='',max_length=300)
+    goal: Literal['understand','implement','critique']='understand'
+    minutes: Literal[5,15,30]=15
+    voice: Literal['browser','elevenlabs']='browser'
+
+
 class Meta(Contract):
     title: str=Field(min_length=1,max_length=800)
     authors: list[str]=Field(default_factory=list)
@@ -30,6 +37,7 @@ class Meta(Contract):
     pages: int=Field(default=1,ge=1,le=1000)
     paper_id: str=''
     tts_provider: Literal['elevenlabs','browser']='browser'
+    reader: ReaderProfile=Field(default_factory=ReaderProfile)
 
 
 class Section(Contract):
@@ -68,6 +76,16 @@ class Flashcard(PageBlock):
     front: str=Field(min_length=1,max_length=500)
     back: str=Field(min_length=1,max_length=1800)
     section_id: str
+    choices: list[str]=Field(default_factory=list,max_length=4)
+    correct_index: int|None=Field(default=None,ge=0,le=3)
+
+    @model_validator(mode='after')
+    def quiz_answer(self):
+        if self.choices and (len(self.choices)<2 or len(set(self.choices))!=len(self.choices) or self.correct_index is None or self.correct_index>=len(self.choices)):
+            raise ValueError('A quiz needs distinct choices and a valid answer index')
+        if not self.choices and self.correct_index is not None:
+            raise ValueError('An answer index needs choices')
+        return self
 
 
 class Table(Contract):

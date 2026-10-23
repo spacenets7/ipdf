@@ -53,6 +53,11 @@
     $('#term-definition').textContent=entry.definition;
     $('#term-provenance').textContent=`Page ${entry.page} · ${entry.generated_by.model} · ${entry.generated_by.prompt_version}`;
     $('#term-source').href=sourceUrl(entry.page);
+    let evidence=document.querySelector('#term-evidence');
+    if(!evidence){evidence=el('details');evidence.id='term-evidence';$('#term-provenance').after(evidence);}
+    evidence.replaceChildren(el('summary','','Read the source passage'));
+    const source=paper.sections.find(s=>s.id===entry.section_id);
+    evidence.append(el('p','',source?.text || 'Open the original page to inspect the source.'));
     activeCard={id:`term:${entry.section_id}:${entry.term}`,front:entry.term,back:entry.definition,page:entry.page};
     $('#save-term').textContent=deck.some(card=>card.id===activeCard.id)?'Saved to deck ✓':'Save to deck +';
     if(!dialog.open){if(modal)dialog.showModal();else dialog.show();}
@@ -127,6 +132,8 @@
     }
   }
   const provenance=paper.provenance;
+  const profile=paper.meta.reader;
+  if(profile) $('#provenance').append(el('p','',`Goal: ${profile.goal} · ${profile.minutes}-minute target · Background: ${profile.background||'Not specified'}`));
   $('#provenance').append(el('p','',`Generated with ${provenance.model} · ${new Date(provenance.generated_at).toLocaleDateString()}`),
     el('p','',`${provenance.prompt_tokens.toLocaleString()} input tokens · ${provenance.completion_tokens.toLocaleString()} output tokens`),
     el('p','',provenance.prices_configured ? `Recorded generation cost: $${provenance.recorded_cost_usd.toFixed(5)}` : 'Provider prices were not configured; recorded cost is not a billing estimate.'),
@@ -155,4 +162,32 @@
   const observer=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting){const page=Number(entry.target.dataset.page);$('#reading-progress-bar').style.width=`${page/paper.meta.pages*100}%`;document.querySelectorAll('.outline-link').forEach(link=>link.classList.toggle('current',link.getAttribute('href')==='#'+entry.target.id));}}},{rootMargin:'-15% 0px -60% 0px'});
   document.querySelectorAll('.paper-section').forEach(section=>observer.observe(section));
   window.ipdfViewer={paper,notify,safeUrl,sourceUrl};
+  const learningKey=`ipdf-learning:${paper.meta.paper_id}:${paper.meta.level}`;
+  let learning={attempts:[],simpler:false};
+  try {const saved=JSON.parse(localStorage.getItem(learningKey)||'null');if(saved&&Array.isArray(saved.attempts))learning=saved;}catch{}
+  function persistLearning(){try{localStorage.setItem(learningKey,JSON.stringify(learning));}catch{}}
+  const learningPanel=el('section','learning-panel');
+  learningPanel.append(el('h2','','Check your understanding'),el('p','','One question, then an explanation. Missed answers enable simpler narration. Results stay in this browser. This adapts your reading; it does not retrain a model.'));
+  const outcome=el('p','quiz-feedback');
+  function updateOutcome(){const correct=learning.attempts.filter(a=>a.correct).length;outcome.textContent=`${correct} / ${learning.attempts.length} correct attempts. Next explanation: ${learning.simpler?'simpler':'standard'}.`;}
+  updateOutcome();learningPanel.append(outcome);
+  for(const card of paper.flashcards.filter(c=>c.choices?.length)){
+    const item=el('details','study-card');item.append(el('summary','',card.front));
+    const choices=el('div','quiz-choices'),feedback=el('p','quiz-feedback');
+    card.choices.forEach((choice,index)=>{const answer=el('button','button secondary',choice);answer.type='button';answer.addEventListener('click',()=>{
+      const correct=index===card.correct_index;
+      learning.attempts.push({card_id:card.id,page:card.page,correct,at:new Date().toISOString(),prompt_version:card.generated_by.prompt_version});
+      learning.simpler=!correct;persistLearning();updateOutcome();
+      feedback.textContent=(correct?'Correct. ':'Let us revisit that. ')+card.back;
+      choices.querySelectorAll('button').forEach(b=>b.disabled=true);
+      document.dispatchEvent(new CustomEvent('ipdf:adapt',{detail:{simpler:learning.simpler}}));
+    });choices.append(answer);});
+    item.append(choices,feedback,sourceLink(card.page));learningPanel.append(item);
+  }
+  if(!paper.flashcards.some(c=>c.choices?.length))learningPanel.append(el('p','','No validated quiz choices in this edition. You can still study the flashcards and replay simpler narration.'));
+  const reset=el('button','button secondary','Reset learning history');reset.addEventListener('click',()=>{learning={attempts:[],simpler:false};persistLearning();location.reload();});
+  const download=el('button','button secondary','Export learning history');download.addEventListener('click',()=>{const link=el('a');link.href=URL.createObjectURL(new Blob([JSON.stringify({paper_id:paper.meta.paper_id,...learning},null,2)],{type:'application/json'}));link.download='ipdf-learning.json';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);});
+  learningPanel.append(reset,download);$('#sections').after(learningPanel);
+  window.ipdfViewer.learning=learning;
+  document.addEventListener('ipdf:adapt',event=>{window.ipdfViewer.learning.simpler=event.detail.simpler;});
 })();

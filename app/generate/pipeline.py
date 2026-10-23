@@ -4,7 +4,7 @@ from app import db
 from app.config import settings
 from app.schema import IPDF,Meta,Provenance,Issue
 from app.generate import glossary,flashcards,narration,charts
-from app.generate.common import VERSIONS
+from app.generate.common import VERSIONS,reader_context
 from app.llm import run_id,ProviderUnavailable
 
 log=logging.getLogger(__name__)
@@ -25,7 +25,7 @@ def finish(document):
 def build(paper,level,progress=lambda percent,message:None):
     chosen=settings.backend()
     document=IPDF(meta=Meta(title=paper.title,authors=paper.authors,source_url=paper.source_url,
-        level=level,pages=paper.pages,paper_id=paper.paper_id,tts_provider=settings.tts_provider if settings.tts_provider in ('elevenlabs','browser') else 'browser'),sections=paper.sections,tables=paper.tables,
+        level=level,reader=reader_context.get(),pages=paper.pages,paper_id=paper.paper_id,tts_provider=reader_context.get().get('voice',settings.tts_provider) if reader_context.get().get('voice',settings.tts_provider) in ('elevenlabs','browser') else 'browser'),sections=paper.sections,tables=paper.tables,
         figures=paper.figures,issues=[Issue(plugin='ingest',message=w) for w in paper.warnings],
         provenance=Provenance(model=chosen.model or 'unconfigured',prompt_versions=VERSIONS,
             generated_at=datetime.now(timezone.utc),prices_configured=bool(chosen.price_in or chosen.price_out)))

@@ -22,7 +22,7 @@ def test_hosted_mock_end_to_end_all_levels(level,monkeypatch):
         elif '"title": "GlossaryOutput"' in system:
             value={'entries':[{'term':'Research','definition':'A systematic investigation of a question.'}]}
         elif '"title": "CardsOutput"' in system:
-            value={'cards':[{'front':'What does this page discuss?','back':'Interactive papers and their source text layer.'}]}
+            value={'cards':[{'front':'What does this page discuss?','back':'Interactive papers and their source text layer.','choices':['Interactive papers','Cooking','Astronomy'],'correct_index':0}]}
         elif '"title": "NarrationOutput"' in system:
             value={'script':'This section discusses research on interactive papers and the source text layer.',
                    'simpler_script':'A paper can be made interactive while keeping its original words.'}
@@ -36,13 +36,16 @@ def test_hosted_mock_end_to_end_all_levels(level,monkeypatch):
     monkeypatch.setattr('app.llm.OpenAI',factory)
     monkeypatch.setattr(settings,'tts_provider','browser')
     with TestClient(app) as client:
-        response=client.post('/ipdf/create',files={'pdf':('paper.pdf',make_pdf())},data={'level':level})
+        response=client.post('/ipdf/create',files={'pdf':('paper.pdf',make_pdf())},data={'level':level,'background':'Python and statistics','goal':'implement','minutes':'5'})
         state=wait(client,response.json()['job_id'])
         assert state['state']=='ready',state
         document_id=state['result_id']
         document=IPDF.model_validate(client.get(f'/ipdf/{document_id}.json').json())
         assert len(document.glossary)==len(document.flashcards)==len(document.narration)==2
         assert document.meta.level==level
+        assert document.meta.reader.goal=='implement'
+        assert document.flashcards[0].choices[document.flashcards[0].correct_index]=='Interactive papers'
+        assert any('Python and statistics' in call['messages'][1]['content'] for call in calls)
         assert document.provenance.prompt_tokens==len(calls)*10
         assert all(block.generated_by.model=='mock-model' for block in document.glossary)
         audio=client.post(f'/audio/{document_id}/p1?simpler=true')

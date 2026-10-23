@@ -127,3 +127,26 @@ three-paper runs remain source-only validation, not hosted generation evidence.
 Remaining live checks: a completed annotated paper at all levels, full hosted
 three-paper chart/E2E validation, Docker execution/public deployment, and physical
 phone background/lock-screen playback. These are not claimed as passed.
+
+
+## Personalized workflow — 23 October 2026
+
+- Reader level + background + goal + depth target propagate into hosted prompts,
+  JSON metadata and cache identity. Browser / ElevenLabs voice is selectable.
+- Mocked suite: 42 passed (one existing Starlette deprecation warning). The three
+  level E2E tests now include a reader profile and valid multiple-choice output.
+- Live HTTP upload of page 1 from Attention Is All You Need completed with five
+  glossary entries, three quiz cards and one narration segment. FAST was Groq;
+  DEEP grounding was Ultramarine. Tokens: 12,175 input, 13,095 output including
+  retries. Recorded DEEP cost: $0.00601245. FAST prices were unset, so this is not
+  a complete provider billing total. No table was found on that page; no chart
+  was invented. This is a one-page smoke check, not full-paper validation.
+- Live ElevenLabs synthesis through the app's audio job endpoint passed for one
+  2,150-character narration: 2,239,886 MP3 bytes, served with HTTP 200 and cached.
+- Browser: the generated quiz showed source-linked feedback after a wrong answer;
+  the subsequent player state was SIMPLER REPLAY / BROWSER VOICE. No JS errors
+  were reported. Physical phone lock-screen playback remains unverified.
+- Local learning history is exportable/resettable. Evaluation reports observed
+  repeated-question results; no model-training or causal learning-gain claim.
+- An MIT license and GitHub mocked-test workflow are included. Runtime data,
+  provider keys and uploaded papers remain excluded from Git.
