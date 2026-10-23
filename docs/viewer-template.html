@@ -196,7 +196,7 @@
   let learning={attempts:[],simpler:false};
   try {const saved=JSON.parse(localStorage.getItem(learningKey)||'null');if(saved&&Array.isArray(saved.attempts))learning=saved;}catch{}
   function persistLearning(){try{localStorage.setItem(learningKey,JSON.stringify(learning));}catch{}}
-  const learningPanel=el('section','learning-panel');
+  const learningPanel=el('section','learning-panel');learningPanel.id='learning-check';
   learningPanel.append(el('h2','','Check your understanding'),el('p','','One question, then an explanation. Missed answers enable simpler narration. Results stay in this browser. This adapts your reading; it does not retrain a model.'));
   const outcome=el('p','quiz-feedback');
   function updateOutcome(){const correct=learning.attempts.filter(a=>a.correct).length;outcome.textContent=`${correct} / ${learning.attempts.length} correct attempts. Next explanation: ${learning.simpler?'simpler':'standard'}.`;}
@@ -307,15 +307,18 @@
       else {notify(result.message||'Using your browser voice.');browserPlay(simpler?segment.simpler_script:segment.script,token);}
     }catch{if(token===epoch){notify('Hosted audio is unavailable. Using your browser voice.');browserPlay(simpler?segment.simpler_script:segment.script,token);}}
   }
+  let pendingOffset=0;
+  document.addEventListener('ipdf:resume',event=>{if(playing)return;const found=ordered.findIndex(n=>n.section_id===event.detail.section_id);if(found>=0){index=found;pendingOffset=event.detail.offset||0;$('#playback-speed').value=String(event.detail.speed);}});
+  audio.addEventListener('loadedmetadata',()=>{if(pendingOffset&&Number.isFinite(audio.duration)){audio.currentTime=Math.min(pendingOffset,audio.duration);pendingOffset=0;}});
   const resumeKey=`ipdf-resume:${paper.meta.paper_id}:${paper.meta.level}`;
   try {const saved=JSON.parse(localStorage.getItem(resumeKey)||'null');if(saved){const found=ordered.findIndex(n=>n.section_id===saved.section);if(found>=0)index=found;if([.75,1,1.25,1.5].includes(saved.speed))$('#playback-speed').value=String(saved.speed);}}catch{}
-  function savePosition(){try{localStorage.setItem(resumeKey,JSON.stringify({section:current()?.section_id,speed:speed()}));}catch{}}
+  function savePosition(){const position={section_id:current()?.section_id,speed:speed(),offset:browser?0:(audio.currentTime||0)};try{localStorage.setItem(resumeKey,JSON.stringify({section:position.section_id,speed:position.speed}));}catch{}if(position.section_id)document.dispatchEvent(new CustomEvent('ipdf:position',{detail:position}));}
+  setInterval(savePosition,10000);
   function start(useSimpler=false) {
     useSimpler=useSimpler || Boolean(window.ipdfViewer.learning?.simpler && current()?.simpler_script);
-    savePosition();
     if(!ordered.length){notify('This edition has no generated narration yet. Source pages are still available to read.');return;}
     if(useSimpler&&!current().simpler_script){notify('This edition does not include a simpler replay for this section.');return;}
-    stop();simpler=useSimpler;const token=epoch;selected();
+    stop();simpler=useSimpler;const token=epoch;selected();savePosition();
     const segment=current();const existing=useSimpler?segment.simpler_audio_url:segment.audio_url;
     if(existing)hostedPlay(existing,token);
     else if(paper.meta.tts_provider==='elevenlabs'&&document.body.dataset.documentId)prepareHosted(segment,token);

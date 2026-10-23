@@ -15,3 +15,11 @@ services:
         value: browser
       - key: DATA_DIR
         value: /tmp/ipdf-data
+      - key: APP_BASE_URL
+        sync: false
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+      - key: HOST_STORAGE_EPHEMERAL
+        value: "true"

@@ -47,7 +47,7 @@ def portable_document(document):
     return IPDF.model_validate(document.model_dump())
 
 
-def create(job,upload_path,arxiv_id,level,reader=None):
+def create(job,upload_path,arxiv_id,level,reader=None,owner_id=None):
     token=run_id.set(job)
     profile_token=reader_context.set(reader or {})
     try:
@@ -60,11 +60,14 @@ def create(job,upload_path,arxiv_id,level,reader=None):
             content=Path(upload_path).read_bytes()
         jobs.update(job,progress=15,message='Extracting source text, tables and figures')
         paper=extract_document(content,metadata)
-        key=cache_key(paper.paper_id,level,reader)
+        key=hashlib.sha256((cache_key(paper.paper_id,level,reader)+str(owner_id)).encode()).hexdigest()
         cached=db.query('SELECT id,json FROM ipdfs WHERE cache_key=?',(key,),one=True)
         needs_retry=bool(cached and settings.backend().api_key and settings.backend().model and
             any(issue['plugin']=='configuration' for issue in json.loads(cached['json']).get('issues',[])))
         if cached and not needs_retry:
+            if owner_id:
+                db.execute('INSERT INTO document_access(document_id,account_id) VALUES(?,?) ON CONFLICT(document_id) DO NOTHING',(cached['id'],owner_id))
+                jobs.enqueue('prepare',__import__('app.tutor',fromlist=['prepare']).prepare,cached['id'],owner_id,owner_id=owner_id)
             jobs.update(job,'ready',100,'Loaded the saved interactive edition',result_id=cached['id'])
             return
         directory=settings.data_dir/'papers'
@@ -83,11 +86,18 @@ def create(job,upload_path,arxiv_id,level,reader=None):
             ON CONFLICT(cache_key) DO UPDATE SET json=excluded.json,model=excluded.model''',
             (document_id,paper.paper_id,level,document.provenance.model,key,document.model_dump_json()))
         actual=db.query('SELECT id FROM ipdfs WHERE cache_key=?',(key,),one=True)['id']
+        if owner_id:
+            db.execute('INSERT INTO document_access(document_id,account_id) VALUES(?,?) ON CONFLICT(document_id) DO NOTHING',(actual,owner_id))
+            # Queue the prerequisite map while the reader is away. No browser polling required.
+            jobs.enqueue('prepare',__import__('app.tutor',fromlist=['prepare']).prepare,actual,owner_id,owner_id=owner_id)
+            if document.meta.reader.voice=='elevenlabs':
+                for segment in document.narration:
+                    jobs.audio_job((owner_id,actual,segment.section_id,False),synthesize,actual,segment.section_id,False,owner_id=owner_id)
         jobs.update(job,'ready',100,'Your interactive paper is ready',result_id=actual)
     finally:
         reader_context.reset(profile_token)
         run_id.reset(token)
-        if upload_path:
+        if upload_path and jobs.state(job)['state']=='ready':
             Path(upload_path).unlink(missing_ok=True)
 
 

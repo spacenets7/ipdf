@@ -1,5 +1,6 @@
 """HTTP end-to-end checks on three real PDFs. Reports source-only honestly."""
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -11,7 +12,9 @@ from app.config import settings
 if __name__=='__main__':
     base=sys.argv[1] if len(sys.argv)>1 else 'http://127.0.0.1:8000'
     reports=[]
-    with httpx.Client(base_url=base,timeout=30) as client:
+    with httpx.Client(base_url=base,timeout=30,cookies={'ipdf_session':os.getenv('IPDF_SESSION','')}) as client:
+        if client.get('/api/library').status_code!=200:
+            raise SystemExit('Sign in first and set IPDF_SESSION privately in the command environment. Never commit or print it.')
         configured=client.get('/health').json()['llm_configured']
         print('Integration mode:', 'HOSTED GENERATION' if configured else 'SOURCE-ONLY (hosted credentials missing)',flush=True)
         for arxiv_id,level in zip(('1706.03762','1810.04805','1512.03385'),('beginner','intermediate','expert')):

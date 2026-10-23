@@ -166,7 +166,7 @@
   let learning={attempts:[],simpler:false};
   try {const saved=JSON.parse(localStorage.getItem(learningKey)||'null');if(saved&&Array.isArray(saved.attempts))learning=saved;}catch{}
   function persistLearning(){try{localStorage.setItem(learningKey,JSON.stringify(learning));}catch{}}
-  const learningPanel=el('section','learning-panel');
+  const learningPanel=el('section','learning-panel');learningPanel.id='learning-check';
   learningPanel.append(el('h2','','Check your understanding'),el('p','','One question, then an explanation. Missed answers enable simpler narration. Results stay in this browser. This adapts your reading; it does not retrain a model.'));
   const outcome=el('p','quiz-feedback');
   function updateOutcome(){const correct=learning.attempts.filter(a=>a.correct).length;outcome.textContent=`${correct} / ${learning.attempts.length} correct attempts. Next explanation: ${learning.simpler?'simpler':'standard'}.`;}

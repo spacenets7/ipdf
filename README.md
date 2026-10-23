@@ -9,7 +9,7 @@ It does **not** replace the paper with a summary.
 
 Python 3.11 · FastAPI · Pydantic · PyMuPDF · Jinja2 · stdlib SQLite · vanilla JS ·
 vendored Chart.js. All inference uses a **hosted OpenAI-compatible endpoint**.
-No GPU, model download, account system, or JavaScript framework is required.
+No GPU, model download, or JavaScript framework is required. GitHub sign-in protects private libraries and paid tools.
 
 ## Run
 
@@ -81,6 +81,48 @@ glossary, cards and narration. Incomplete DEEP configuration uses FAST. DEEP
 transport failures retry and fall back to FAST; schema-invalid outputs are dropped
 after at most two retries. Actual provider/model metadata accompanies each block.
 Keys remain on the server and are absent from JSON/HTML exports.
+
+## GitHub login, private libraries and preparation
+
+Create a GitHub OAuth App with callback `https://YOUR_HOST/auth/github/callback`.
+Configure `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, and `APP_BASE_URL` on the
+server (`CLIENT_ID` / `CLIENT_SECRET` aliases are accepted). Local callback URLs
+must also be registered with GitHub when testing actual local OAuth. No account
+or repository scopes are requested; the app needs only GitHub public identity.
+GitHub access tokens are not stored. App sessions use opaque HttpOnly cookies,
+server-side token hashes, expiry, PKCE and browser-bound single-use OAuth state.
+
+Upload up to three PDFs at once, then return to **Library**. Each account's papers,
+PDFs, audio, jobs, prerequisite maps, reading position and conversations are
+access-checked on the server. Editions are private until their owner selects
+**Share by link**; shared editions allow public reading, not paid tutor use.
+Downloaded exports are independent copies and cannot be revoked by unsharing.
+
+Preparation continues without a browser while the process runs: learning blocks,
+a grounded prerequisite map, and cached narration when ElevenLabs is selected.
+Jobs store their arguments in SQLite and recover interrupted registered tasks on
+startup, with bounded automatic restart attempts and manual retry controls. This
+requires the database and uploads to survive. **The chosen free Render plan may
+sleep or clear its temporary disk: overnight readiness and retained account
+history are not guaranteed.** The Library displays that limit. Always-on compute
+and a persistent disk would be required for dependable unattended overnight use.
+No paid hosting upgrade was enabled.
+
+The personal tutor uses the selected section, exact source quotations, a bounded
+conversation history and account-specific concept familiarity. It declines
+unsupported questions and separately checks supported answers with grounding.
+Learning paths order prerequisites before dependent concepts and reject cycles.
+The path currently samples the first 20 sections (1,800 characters each); it is
+not an exhaustive knowledge graph. Typed questions work everywhere. Optional
+browser speech input requires microphone permission and browser support; it is
+not a deployed ElevenLabs realtime Agent. Answers can use ElevenLabs TTS with
+browser speech fallback. Reader position is account-bound; browser speech resumes
+at the section boundary, whereas hosted MP3 can resume at a saved time offset.
+
+Defaults: three paper jobs per account/day, twenty tutor jobs per account/day,
+sixty tutor jobs across the service/day. These complement the provider usage
+limits below. Counters are local to the database and reset when free hosting
+loses that database.
 
 ## Personalized learning and listening
 
@@ -211,12 +253,10 @@ Render's free service has an
 [ephemeral filesystem and spins down when idle](https://render.com/docs/free).
 SQLite, uploads and generated audio are therefore temporary there. Export the
 `.ipdf.html` file to retain a paper; use a persistent volume on a host that offers
-one for durable server storage. Running jobs can be interrupted by restarts; the
-status endpoint then reports an interrupted job rather than hanging forever.
-This repo is deployment-ready configuration, **not a claim that a public host
-was deployed or Docker images were run**. There is no authentication: documents
-are accessible to anyone who has their URL. Do not use a public instance for
-private papers without adding access control.
+one for durable server storage. Serialized jobs can resume after restart only
+when that database and its source files survive. The public Docker service is
+deployed on Render. New papers require GitHub sign-in and are private by default;
+only explicitly shared editions are publicly readable.
 
 ## API
 
@@ -291,7 +331,7 @@ the default; ElevenLabs is opt-in and synthesizes only requested segments.
 - A format conformance suite and independent JSON import/viewer.
 - Optional persistent object storage for free-host deployments.
 - Physical Android/iOS background and lock-screen playback checks.
-- Optional authentication for private/shared deployments; bibliography links.
+- Persistent hosting for reliable overnight preparation; bibliography links.
 - Spaced repetition and portable personal study decks.
 
 ## Community Wisdom

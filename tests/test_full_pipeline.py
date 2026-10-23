@@ -5,6 +5,7 @@ from openai import OpenAI
 from fastapi.testclient import TestClient
 from app.main import app
 from app.config import settings
+from app import db
 from app.schema import IPDF
 from test_ingest import make_pdf
 from test_ipdf_routes import wait
@@ -26,6 +27,9 @@ def test_hosted_mock_end_to_end_all_levels(level,monkeypatch):
         elif '"title": "NarrationOutput"' in system:
             value={'script':'This section discusses research on interactive papers and the source text layer.',
                    'simpler_script':'A paper can be made interactive while keeping its original words.'}
+        elif '"title": "ConceptMap"' in system:
+            value={'concepts':[{'name':'Source text','explanation':'The paper provides a source text layer.',
+                'depends_on':[],'section_id':'p1','page':1,'source_quote':'Research on interactive papers provides a source text layer.'}]}
         else:
             raise AssertionError(system)
         return httpx.Response(200,json={'id':'mock','object':'chat.completion','created':0,'model':'mock-model',
@@ -46,13 +50,16 @@ def test_hosted_mock_end_to_end_all_levels(level,monkeypatch):
         assert document.meta.reader.goal=='implement'
         assert document.flashcards[0].choices[document.flashcards[0].correct_index]=='Interactive papers'
         assert any('Python and statistics' in call['messages'][1]['content'] for call in calls)
-        assert document.provenance.prompt_tokens==len(calls)*10
+        assert document.provenance.prompt_tokens==sum(row['prompt_tokens'] for row in db.query('SELECT * FROM usage WHERE run_id=?',(response.json()['job_id'],)))
         assert all(block.generated_by.model=='mock-model' for block in document.glossary)
         audio=client.post(f'/audio/{document_id}/p1?simpler=true')
         assert audio.status_code==202
         result=wait(client,audio.json()['job_id'])
         assert result['result']['provider']=='browser'
         assert result['result']['script']==document.narration[0].simpler_script
+        prep=db.query("SELECT id FROM jobs WHERE kind='prepare'",one=True)
+        assert wait(client,prep['id'])['state']=='ready'
+        assert client.get(f'/api/tutor/{document_id}').json()['map']['concepts']
         count=len(calls)
         exported=client.get(f'/ipdf/{document_id}/export')
         assert exported.status_code==200

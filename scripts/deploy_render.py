@@ -11,6 +11,8 @@ REPO='https://github.com/spacenets7/ipdf'
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--create',action='store_true');args=parser.parse_args()
     env=dotenv_values(ROOT/'.env')
+    env['GITHUB_CLIENT_ID']=env.get('GITHUB_CLIENT_ID') or env.get('CLIENT_ID')
+    env['GITHUB_CLIENT_SECRET']=env.get('GITHUB_CLIENT_SECRET') or env.get('CLIENT_SECRET')
     key=env.get('RENDER_API_KEY')
     if not key:
         raise SystemExit('Add RENDER_API_KEY to .env; no deployment was performed.')

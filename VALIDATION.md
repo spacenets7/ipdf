@@ -169,3 +169,24 @@ ignored data/validation/public-walking-390.png. Device emulation was cleared.
 Physical phone lock-screen behavior and full-paper hosted three-level/three-paper
 runs are still not claimed. The latest Linux GitHub Actions run passed all 42
 mocked tests and the Pages build passed. Public docs/ links to the full backend.
+
+
+## GitHub accounts and private tutor — 23 October 2026
+
+- 51 mocked tests passed. Coverage includes OAuth state/PKCE, successful callback,
+  opaque-session creation, logout, private document/export/media access, cross-account
+  denial, public reading without paid-tool access, account-bound playback position,
+  acyclic source-linked prerequisite maps and serialized restart recovery.
+- Library supports up to three PDF submissions, a persistent-in-database preparation
+  queue, retry controls and explicit sharing. Prepare jobs map prerequisites; hosted
+  audio is pre-generated only when the reader selected ElevenLabs and budget permits.
+- Tutor answers use selected-section evidence, exact quotes, bounded same-section
+  conversation history and account concept familiarity. Unsupported questions return
+  a fixed refusal; supported answers require a separate grounding pass.
+- User explicitly chose to retain free Render hosting. No paid upgrade or persistent
+  disk was enabled. Overnight completion, retained sessions and retained uploads are
+  not guaranteed on that host. Recovery requires surviving database/source files.
+- Microphone input is optional browser SpeechRecognition; typed questions and spoken
+  answers are supported without it. This is not ElevenLabs' realtime Agent platform.
+- GitHub OAuth settings are configured privately on Render with user consent. Live
+  sign-in and authenticated browser checks are recorded below after deployment.

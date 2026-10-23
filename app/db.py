@@ -57,6 +57,28 @@ CREATE TABLE IF NOT EXISTS jobs (
 CREATE TABLE IF NOT EXISTS plugin_cache (
  cache_key TEXT PRIMARY KEY, json TEXT NOT NULL, model TEXT NOT NULL, backend TEXT NOT NULL,
  created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS accounts (
+ id TEXT PRIMARY KEY, login TEXT NOT NULL, created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS sessions (
+ token_hash TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES accounts(id), expires REAL NOT NULL);
+CREATE TABLE IF NOT EXISTS oauth_states (
+ state_hash TEXT PRIMARY KEY, verifier TEXT NOT NULL, expires REAL NOT NULL);
+CREATE TABLE IF NOT EXISTS document_access (
+ document_id TEXT PRIMARY KEY REFERENCES ipdfs(id), account_id TEXT NOT NULL REFERENCES accounts(id), public INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS learning (
+ account_id TEXT NOT NULL REFERENCES accounts(id), document_id TEXT NOT NULL REFERENCES ipdfs(id),
+ concept TEXT NOT NULL, familiar INTEGER NOT NULL DEFAULT 0, updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+ PRIMARY KEY(account_id,document_id,concept));
+CREATE TABLE IF NOT EXISTS tutor_turns (
+ id TEXT PRIMARY KEY, account_id TEXT NOT NULL REFERENCES accounts(id), document_id TEXT NOT NULL REFERENCES ipdfs(id),
+ section_id TEXT NOT NULL, question TEXT NOT NULL, answer_json TEXT NOT NULL, created_at TEXT DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE IF NOT EXISTS tutor_maps (
+ account_id TEXT NOT NULL REFERENCES accounts(id), document_id TEXT NOT NULL REFERENCES ipdfs(id), json TEXT NOT NULL,
+ PRIMARY KEY(account_id,document_id));
+CREATE TABLE IF NOT EXISTS reading_positions (
+ account_id TEXT NOT NULL REFERENCES accounts(id), document_id TEXT NOT NULL REFERENCES ipdfs(id),
+ section_id TEXT NOT NULL, speed REAL NOT NULL DEFAULT 1, offset REAL NOT NULL DEFAULT 0,
+ PRIMARY KEY(account_id,document_id));
 '''
 
 
@@ -84,6 +106,15 @@ def init_db():
         columns={row['name'] for row in conn.execute('PRAGMA table_info(usage)')}
         if 'run_id' not in columns:
             conn.execute('ALTER TABLE usage ADD COLUMN run_id TEXT')
+        columns={row['name'] for row in conn.execute('PRAGMA table_info(jobs)')}
+        for name,definition in [('owner_id','TEXT'),('args_json','TEXT'),('attempts','INTEGER NOT NULL DEFAULT 0')]:
+            if name not in columns:
+                conn.execute(f'ALTER TABLE jobs ADD COLUMN {name} {definition}')
+        # Only the deliberately published, author-uploaded demo stays public.
+        demo='97a9c32f29ef4262b6dd6c8d210ec848'
+        if conn.execute('SELECT 1 FROM ipdfs WHERE id=?',(demo,)).fetchone():
+            conn.execute("INSERT OR IGNORE INTO accounts(id,login) VALUES('demo','public-example')")
+            conn.execute("INSERT OR IGNORE INTO document_access VALUES(?,'demo',1)",(demo,))
 
 
 def query(sql, args=(), one=False):
