@@ -27,7 +27,8 @@ document.querySelector('#open').addEventListener('click', async () => {
     const frame=document.createElement('iframe');
     frame.title=paper.meta.title || 'iPDF reader';
     frame.style.cssText='width:100%;height:calc(100dvh - 48px);border:0;display:block';
-    frame.src=URL.createObjectURL(new Blob([html],{type:'text/html'}));
+    const exportUrl=URL.createObjectURL(new Blob([html],{type:'text/html'}));
+    frame.srcdoc=html.replace("$('#download-html').href=location.href;",()=>"$('#download-html').href="+JSON.stringify(exportUrl)+';');
     const back=document.createElement('a');
     back.href='./';back.textContent='← Open another paper';
     back.style.cssText='display:block;padding:12px 20px;height:48px';
