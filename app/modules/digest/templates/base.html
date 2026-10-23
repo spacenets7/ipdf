@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#203c32"><meta name="description" content="Research worth reading. A personal, local-first paper digest at your level.">
+<title>{% block title %}LazyDigest — Take your time. Stay curious.{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+<script src="{{ url_for('static', path='player.js') }}" defer></script></head>
+<body>
+<aside class="sidebar">
+  <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">ld<span>↗</span></span>LazyDigest<span class="brand-period">.</span></a>
+  <div class="workspace-label">YOUR READING SPACE</div>
+  <nav aria-label="Main navigation"><a class="nav-item {% if request.url.path == '/digest' %}active{% endif %}" href="/digest"><span aria-hidden="true">▤</span> My digest <span class="nav-arrow">↗</span></a><a class="nav-item {% if request.url.path == '/' %}active{% endif %}" href="/"><span aria-hidden="true">⚙</span> Reading preferences</a></nav>
+  <div class="sidebar-note"><span class="note-star" aria-hidden="true">✳</span><p>A little less searching.<br>A little more understanding.</p><span>Made for the unhurried mind.</span></div>
+  <div class="local-note"><span class="status-dot"></span> Local-first, always.<small>Your reading profile stays on this device.</small></div>
+  {% if user %}<a class="reader" href="/"><span class="avatar">{{ user.name[0]|upper }}</span><span>{{ user.name }}<small>{{ level|capitalize }} reader</small></span><span class="reader-edit">↗</span></a>{% endif %}
+</aside>
+<main class="main">{% block content %}{% endblock %}<footer><span>Slow and steady. Curiosity for the long run.</span><span>Built with open models <span aria-hidden="true">✳</span></span></footer></main>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<section id="audio-dock" class="audio-dock" aria-label="Audio player" hidden><button id="close-player" class="icon-button" aria-label="Close audio player">×</button><div><span class="eyebrow">NOW LISTENING</span><p id="audio-title">Your digest</p></div><audio id="audio-player" controls preload="none"></audio><label class="speed-label">Speed<select id="audio-speed"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option></select></label><small id="audio-provider"></small></section>
+</body></html>

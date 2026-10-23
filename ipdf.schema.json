@@ -1,0 +1,656 @@
+{
+  "$defs": {
+    "Assets": {
+      "additionalProperties": false,
+      "properties": {
+        "original_pdf": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Original Pdf"
+        }
+      },
+      "title": "Assets",
+      "type": "object"
+    },
+    "CellRef": {
+      "additionalProperties": false,
+      "properties": {
+        "row": {
+          "minimum": 0,
+          "title": "Row",
+          "type": "integer"
+        },
+        "column": {
+          "minimum": 0,
+          "title": "Column",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "row",
+        "column"
+      ],
+      "title": "CellRef",
+      "type": "object"
+    },
+    "Chart": {
+      "additionalProperties": false,
+      "properties": {
+        "page": {
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "generated_by": {
+          "$ref": "#/$defs/GeneratedBy"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "bar",
+            "line"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "series": {
+          "items": {
+            "$ref": "#/$defs/Series"
+          },
+          "maxItems": 6,
+          "minItems": 1,
+          "title": "Series",
+          "type": "array"
+        },
+        "source_table": {
+          "title": "Source Table",
+          "type": "string"
+        },
+        "caption": {
+          "title": "Caption",
+          "type": "string"
+        }
+      },
+      "required": [
+        "page",
+        "generated_by",
+        "id",
+        "type",
+        "title",
+        "series",
+        "source_table",
+        "caption"
+      ],
+      "title": "Chart",
+      "type": "object"
+    },
+    "Figure": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "page": {
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "caption": {
+          "title": "Caption",
+          "type": "string"
+        },
+        "data_url": {
+          "title": "Data Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "page",
+        "caption",
+        "data_url"
+      ],
+      "title": "Figure",
+      "type": "object"
+    },
+    "Flashcard": {
+      "additionalProperties": false,
+      "properties": {
+        "page": {
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "generated_by": {
+          "$ref": "#/$defs/GeneratedBy"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "front": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Front",
+          "type": "string"
+        },
+        "back": {
+          "maxLength": 1800,
+          "minLength": 1,
+          "title": "Back",
+          "type": "string"
+        },
+        "section_id": {
+          "title": "Section Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "page",
+        "generated_by",
+        "id",
+        "front",
+        "back",
+        "section_id"
+      ],
+      "title": "Flashcard",
+      "type": "object"
+    },
+    "GeneratedBy": {
+      "additionalProperties": false,
+      "properties": {
+        "plugin": {
+          "title": "Plugin",
+          "type": "string"
+        },
+        "prompt_version": {
+          "title": "Prompt Version",
+          "type": "string"
+        },
+        "model": {
+          "minLength": 1,
+          "title": "Model",
+          "type": "string"
+        },
+        "source_page": {
+          "minimum": 1,
+          "title": "Source Page",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "plugin",
+        "prompt_version",
+        "model",
+        "source_page"
+      ],
+      "title": "GeneratedBy",
+      "type": "object"
+    },
+    "Glossary": {
+      "additionalProperties": false,
+      "properties": {
+        "page": {
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "generated_by": {
+          "$ref": "#/$defs/GeneratedBy"
+        },
+        "term": {
+          "maxLength": 100,
+          "minLength": 1,
+          "title": "Term",
+          "type": "string"
+        },
+        "definition": {
+          "maxLength": 1200,
+          "minLength": 1,
+          "title": "Definition",
+          "type": "string"
+        },
+        "section_id": {
+          "title": "Section Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "page",
+        "generated_by",
+        "term",
+        "definition",
+        "section_id"
+      ],
+      "title": "Glossary",
+      "type": "object"
+    },
+    "Issue": {
+      "additionalProperties": false,
+      "properties": {
+        "plugin": {
+          "title": "Plugin",
+          "type": "string"
+        },
+        "page": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Page"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "plugin",
+        "message"
+      ],
+      "title": "Issue",
+      "type": "object"
+    },
+    "Meta": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "maxLength": 800,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "authors": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Authors",
+          "type": "array"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        },
+        "level": {
+          "enum": [
+            "beginner",
+            "intermediate",
+            "expert"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "pages": {
+          "default": 1,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Pages",
+          "type": "integer"
+        },
+        "paper_id": {
+          "default": "",
+          "title": "Paper Id",
+          "type": "string"
+        },
+        "tts_provider": {
+          "default": "browser",
+          "enum": [
+            "elevenlabs",
+            "browser"
+          ],
+          "title": "Tts Provider",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "source_url",
+        "level"
+      ],
+      "title": "Meta",
+      "type": "object"
+    },
+    "Narration": {
+      "additionalProperties": false,
+      "properties": {
+        "page": {
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "generated_by": {
+          "$ref": "#/$defs/GeneratedBy"
+        },
+        "section_id": {
+          "title": "Section Id",
+          "type": "string"
+        },
+        "script": {
+          "maxLength": 3800,
+          "minLength": 1,
+          "title": "Script",
+          "type": "string"
+        },
+        "simpler_script": {
+          "default": "",
+          "maxLength": 1800,
+          "title": "Simpler Script",
+          "type": "string"
+        },
+        "audio_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audio Url"
+        },
+        "simpler_audio_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Simpler Audio Url"
+        }
+      },
+      "required": [
+        "page",
+        "generated_by",
+        "section_id",
+        "script"
+      ],
+      "title": "Narration",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "prompt_versions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Prompt Versions",
+          "type": "object"
+        },
+        "generated_at": {
+          "format": "date-time",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "backends": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Backends",
+          "type": "array"
+        },
+        "prompt_tokens": {
+          "default": 0,
+          "title": "Prompt Tokens",
+          "type": "integer"
+        },
+        "completion_tokens": {
+          "default": 0,
+          "title": "Completion Tokens",
+          "type": "integer"
+        },
+        "recorded_cost_usd": {
+          "default": 0,
+          "title": "Recorded Cost Usd",
+          "type": "number"
+        },
+        "prices_configured": {
+          "default": false,
+          "title": "Prices Configured",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "model",
+        "prompt_versions",
+        "generated_at"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Section": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "page": {
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "page",
+        "text"
+      ],
+      "title": "Section",
+      "type": "object"
+    },
+    "Series": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "labels": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Labels",
+          "type": "array"
+        },
+        "values": {
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Values",
+          "type": "array"
+        },
+        "source_cells": {
+          "items": {
+            "$ref": "#/$defs/CellRef"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Source Cells",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "labels",
+        "values",
+        "source_cells"
+      ],
+      "title": "Series",
+      "type": "object"
+    },
+    "Table": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "page": {
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "cells": {
+          "items": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "title": "Cells",
+          "type": "array"
+        },
+        "extraction": {
+          "const": "pymupdf",
+          "default": "pymupdf",
+          "title": "Extraction",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "page",
+        "cells"
+      ],
+      "title": "Table",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "ipdf_version": {
+      "const": "0.1",
+      "default": "0.1",
+      "title": "Ipdf Version",
+      "type": "string"
+    },
+    "meta": {
+      "$ref": "#/$defs/Meta"
+    },
+    "sections": {
+      "items": {
+        "$ref": "#/$defs/Section"
+      },
+      "minItems": 1,
+      "title": "Sections",
+      "type": "array"
+    },
+    "glossary": {
+      "items": {
+        "$ref": "#/$defs/Glossary"
+      },
+      "title": "Glossary",
+      "type": "array"
+    },
+    "flashcards": {
+      "items": {
+        "$ref": "#/$defs/Flashcard"
+      },
+      "title": "Flashcards",
+      "type": "array"
+    },
+    "charts": {
+      "items": {
+        "$ref": "#/$defs/Chart"
+      },
+      "title": "Charts",
+      "type": "array"
+    },
+    "narration": {
+      "items": {
+        "$ref": "#/$defs/Narration"
+      },
+      "title": "Narration",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "tables": {
+      "items": {
+        "$ref": "#/$defs/Table"
+      },
+      "title": "Tables",
+      "type": "array"
+    },
+    "figures": {
+      "items": {
+        "$ref": "#/$defs/Figure"
+      },
+      "title": "Figures",
+      "type": "array"
+    },
+    "issues": {
+      "items": {
+        "$ref": "#/$defs/Issue"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "assets": {
+      "$ref": "#/$defs/Assets"
+    }
+  },
+  "required": [
+    "meta",
+    "sections",
+    "provenance"
+  ],
+  "title": "IPDF",
+  "type": "object"
+}
