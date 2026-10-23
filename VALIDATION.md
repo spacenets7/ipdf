@@ -252,4 +252,12 @@ three-paper/three-level run or guaranteed overnight execution on free hosting.
 - Representative muted-text, chart-label and primary-button contrast ratios were
   6.28:1, 9.48:1 and 16.58:1. This is not a full accessibility certification.
 - All 51 mocked tests pass; JavaScript syntax checks and the static-reader build pass.
-  Deployment verification is recorded after the update goes live.
+- Render deployment dep-dbdo744s728c73cku18g succeeded for ff1ffed. The live
+  authenticated library and new upload page rendered successfully. The free-host
+  restart cleared the earlier temporary test paper, as expected. No extra paid
+  provider calls were made to recreate it. GitHub tests and Pages deployment both
+  passed for this commit. Live proof: ignored data/validation/t3-live-home.png.
+- Visual reference: https://t3.codes/. CSS variables and reduced-motion handling
+  also follow Joe Attardi's author-written guidance at
+  https://dev.to/joeattardi/beyond-breakpoints-leveraging-user-preference-media-queries-in-css-5el0
+  (no comments were present on that article when read).
