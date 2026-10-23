@@ -13,6 +13,11 @@ No GPU, model download, account system, or JavaScript framework is required.
 
 ## Run
 
+**Full hosted app:** [ipdf-tvvn.onrender.com](https://ipdf-tvvn.onrender.com/).
+Upload → personalized generation → study → browser or ElevenLabs listening.
+The free service has temporary storage; export editions to retain them.
+
+
 **Public static reader:** [spacenets7.github.io/ipdf](https://spacenets7.github.io/ipdf/).
 Open an exported `.ipdf.json` file or explore the authored welcome demo. Files are
 read in the browser. GitHub Pages cannot run FastAPI, PDF ingestion or hosted

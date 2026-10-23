@@ -17,7 +17,7 @@ from app.schema import IPDF
 
 def cache_key(paper_id,level,reader=None):
     fast,deep=settings.backend(),settings.backend('DEEP')
-    return hashlib.sha256(json.dumps(['ingest/0.1.1',paper_id,level,fast.model,fast.base_url,
+    return hashlib.sha256(json.dumps(['ingest/0.1.2',paper_id,level,fast.model,fast.base_url,
         deep.model,deep.base_url,bool(fast.api_key and fast.model),VERSIONS,reader or {}],sort_keys=True).encode()).hexdigest()
 
 

@@ -146,7 +146,8 @@ def _ingest_pdf(content,metadata=None):
                 continue
             lines=[line.strip() for line in text.splitlines() if line.strip()]
             heading=next((line for line in lines[:20] if re.match(r'^\d+(?:\.\d+)*\s+[A-Z]',line) and len(line)<100),None)
-            title=heading or ('Opening page' if index==0 else f'Page {index+1}')
+            # Numbered affiliations on the title page are not section headings.
+            title='Opening page' if index==0 else (heading or f'Page {index+1}')
             sections.append(Section(id=f'p{index+1}',title=title,page=index+1,text=text))
             tables.extend(extract_tables(page,index+1))
             figures.extend(extract_figures(document,page,index+1))

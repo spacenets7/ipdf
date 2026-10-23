@@ -150,3 +150,5 @@ phone background/lock-screen playback. These are not claimed as passed.
   repeated-question results; no model-training or causal learning-gain claim.
 - An MIT license and GitHub mocked-test workflow are included. Runtime data,
   provider keys and uploaded papers remain excluded from Git.
+
+Render Docker build and initial public deployment passed at https://ipdf-tvvn.onrender.com/. The Linux CI issue was an absent parent directory for pytest temporary files; the test path now works in a clean checkout.
