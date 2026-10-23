@@ -10,7 +10,7 @@ def build():
     destination=ROOT/'docs'
     destination.mkdir(exist_ok=True)
     paper=IPDF.model_validate(dict(
-        meta=dict(title='Welcome to iPDF',authors=['iPDF'],source_url='https://github.com/blackfang007/ipdf/blob/main/SPEC.md',level='beginner'),
+        meta=dict(title='Welcome to iPDF',authors=['iPDF'],source_url='https://github.com/spacenets7/ipdf/blob/main/SPEC.md',level='beginner'),
         sections=[dict(id='welcome',title='A paper with more ways in',page=1,text=
             'iPDF keeps the original paper at the center. Open an exported iPDF JSON file to explore its source sections, glossary, flashcards, charts and narration. This welcome document is an authored format demonstration, not generated research output.\n\nCreate annotated papers with the FastAPI application. The GitHub Pages edition reads existing files locally in your browser and never calls a language model.')],
         provenance=dict(model='authored demonstration',prompt_versions={},generated_at='2026-10-23T00:00:00Z')))
