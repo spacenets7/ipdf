@@ -234,3 +234,22 @@ library as spacenets7 without another credential prompt.
 
 These results cover a bounded one-page authenticated workflow, not a full-paper
 three-paper/three-level run or guaranteed overnight execution on free hosting.
+
+## T3-inspired interface refresh
+
+- Shared monochrome dark palette, sans-serif typography, subtle grid hero and white
+  primary actions across upload, library, tutor, reader and static Pages reader.
+- Desktop workspace sidebar and compact mobile navigation, including sign-out.
+  Library search filters titles locally. Completed jobs collapse into history;
+  active jobs retain progress and retry controls. Unchanged polling responses do
+  not rebuild paper cards or completed-job history.
+- Browser checks used saved paper output and a loopback-only mocked design harness,
+  excluded from Git. Search/no-results state, glossary popover, saving a flashcard,
+  deck display and walking controls passed. No model or ElevenLabs calls were used.
+- Upload, tutor and reader measured viewport/client/scroll widths of 390/390/390.
+  Library also had no horizontal overflow. Desktop layout was reviewed at 1280px.
+  Temporary viewport overrides were cleared after checks.
+- Representative muted-text, chart-label and primary-button contrast ratios were
+  6.28:1, 9.48:1 and 16.58:1. This is not a full accessibility certification.
+- All 51 mocked tests pass; JavaScript syntax checks and the static-reader build pass.
+  Deployment verification is recorded after the update goes live.

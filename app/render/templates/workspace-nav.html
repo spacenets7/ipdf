@@ -1,0 +1,18 @@
+<a class="skip-link" href="#workspace-main">Skip to content</a>
+<aside class="workspace-sidebar" aria-label="Workspace">
+  <a class="logo" href="/library"><span class="logo-mark">i</span>iPDF<span class="version">0.1</span></a>
+  <a class="button primary sidebar-create" href="/#create-form"><span aria-hidden="true">＋</span> New paper</a>
+  <span class="nav-caption">WORKSPACE</span>
+  <nav class="workspace-nav" aria-label="Main navigation">
+    <a href="/library" {% if active == 'library' %}aria-current="page"{% endif %}><span aria-hidden="true">▦</span> Library</a>
+    <a href="/library#queue-section"><span aria-hidden="true">≋</span> Preparation queue</a>
+    {% if document_id %}
+    <span class="nav-caption">THIS PAPER</span>
+    <a href="/ipdf/{{ document_id }}"><span aria-hidden="true">▤</span> Read & listen</a>
+    <a href="/tutor/{{ document_id }}" {% if active == 'tutor' %}aria-current="page"{% endif %}><span aria-hidden="true">✧</span> Learn & ask</a>
+    {% endif %}
+  </nav>
+  <div class="sidebar-note"><span class="status-dot" aria-hidden="true"></span> Your papers, your pace.<p>Read. Ask better questions.<br>Take the ideas with you.</p></div>
+  <div class="workspace-account"><span class="account-avatar" aria-hidden="true">{{ user.login[:1]|upper }}</span><div><strong>{{ user.login }}</strong><span>GitHub account</span></div><form action="/auth/logout" method="post"><button class="icon-button" aria-label="Sign out {{ user.login }}" title="Sign out">↪</button></form></div>
+</aside>
+<header class="mobile-workspace-header"><a class="logo" href="/library"><span class="logo-mark">i</span>iPDF</a><nav aria-label="Mobile navigation"><a href="/library" {% if active == 'library' %}aria-current="page"{% endif %}>Library</a><a class="button primary" href="/#create-form">＋ New paper</a><form action="/auth/logout" method="post"><button class="icon-button" aria-label="Sign out {{ user.login }}" title="Sign out">↪</button></form></nav></header>

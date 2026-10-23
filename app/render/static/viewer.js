@@ -114,9 +114,9 @@
       const evidence=el('details','chart-evidence');evidence.append(el('summary','','Inspect source values'),table);figure.append(evidence);article.append(figure);
       const horizontal=chart.type==='bar'&&chart.series[0].labels.some(label=>label.length>18);
       if(horizontal)container.style.height=`${Math.max(230,Math.min(700,chart.series[0].labels.length*29+45))}px`;
-      const category={grid:{display:false},ticks:{font:{size:10},callback:function(value){const label=this.getLabelForValue(value);return label.length>22?label.slice(0,21)+'…':label;}}};
-      const numeric={beginAtZero:true,grid:{color:'#e4e8dd'},ticks:{font:{size:10}}};
-      if(window.Chart) new Chart(canvas,{type:chart.type,data:{labels:chart.series[0].labels,datasets:chart.series.map((s,i)=>({label:s.name,data:s.values,borderWidth:1.5,borderRadius:4,backgroundColor:['#517969bb','#c98668bb','#b6bc90bb','#899ab7bb','#d1b772bb'][i%5],borderColor:['#517969','#c98668','#9ca672','#899ab7','#b9a253'][i%5]}))},options:{indexAxis:horizontal?'y':'x',responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:chart.series.length>1,position:'bottom'}},scales:{x:horizontal?numeric:category,y:horizontal?category:numeric}}});
+      const category={grid:{display:false},ticks:{color:'#b9b9c8',font:{size:10},callback:function(value){const label=this.getLabelForValue(value);return label.length>22?label.slice(0,21)+'…':label;}}};
+      const numeric={beginAtZero:true,grid:{color:'#303039'},ticks:{color:'#b9b9c8',font:{size:10}}};
+      if(window.Chart) new Chart(canvas,{type:chart.type,data:{labels:chart.series[0].labels,datasets:chart.series.map((s,i)=>({label:s.name,data:s.values,borderWidth:1.5,borderRadius:4,backgroundColor:['#a5b4fcbb','#6ec9acbb','#e8b781bb','#d49cbfbb','#8dc5e3bb'][i%5],borderColor:['#a5b4fc','#6ec9ac','#e8b781','#d49cbf','#8dc5e3'][i%5]}))},options:{indexAxis:horizontal?'y':'x',responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:chart.series.length>1,position:'bottom',labels:{color:'#c5c5d2'}}},scales:{x:horizontal?numeric:category,y:horizontal?category:numeric}}});
       else container.replaceWith(el('p','', 'Chart unavailable; inspect the source values below.'));
     }
     for(const figure of paper.figures.filter(figure=>figure.page===section.page)) {
