@@ -190,3 +190,16 @@ mocked tests and the Pages build passed. Public docs/ links to the full backend.
   answers are supported without it. This is not ElevenLabs' realtime Agent platform.
 - GitHub OAuth settings are configured privately on Render with user consent. Live
   sign-in and authenticated browser checks are recorded below after deployment.
+
+
+### Deployment and live privacy recheck
+
+The private-library build is deployed at https://ipdf-tvvn.onrender.com/ with
+GitHub login configured and ephemeral storage explicitly enabled. Public checks
+passed for anonymous upload rejection, library rejection, private JSON/media
+hiding and tutor rejection. The real OAuth flow reached GitHub's sign-in page;
+completion of live callback/private-upload/tutor checks awaits the user's sign-in.
+No successful live authenticated flow is claimed yet. The final navigation build
+includes labelled batch uploads and an Ask-about-this-section action in walking
+mode. Repository visibility was restored to public at the user's explicit request
+after its private state prevented Render from fetching source. Hosting stayed free.
