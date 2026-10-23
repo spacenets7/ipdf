@@ -152,3 +152,20 @@ phone background/lock-screen playback. These are not claimed as passed.
   provider keys and uploaded papers remain excluded from Git.
 
 Render Docker build and initial public deployment passed at https://ipdf-tvvn.onrender.com/. The Linux CI issue was an absent parent directory for pytest temporary files; the test path now works in a clean checkout.
+
+
+## Public workflow verification
+
+The deployed app at https://ipdf-tvvn.onrender.com/ passed a one-page real-paper
+upload -> background generation -> JSON/HTML export -> ElevenLabs audio job ->
+MP3 playback check. Public output: five glossary entries, three quiz cards and
+one narration segment. Recorded DEEP usage was $0.0025351; FAST prices were not
+configured. Hosted audio: 2,379 characters, 2,502,782 MP3 bytes, HTTP 200. The
+browser player reported PLAYING / AUDIO, readyState 4, with no audio error.
+
+Exact 390-pixel emulation showed equal document/client/viewport widths of 390;
+walking controls and source-page links were visible. Proof is stored locally in
+ignored data/validation/public-walking-390.png. Device emulation was cleared.
+Physical phone lock-screen behavior and full-paper hosted three-level/three-paper
+runs are still not claimed. The latest Linux GitHub Actions run passed all 42
+mocked tests and the Pages build passed. Public docs/ links to the full backend.
