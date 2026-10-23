@@ -24,6 +24,13 @@ document.querySelector('#open').addEventListener('click', async () => {
     const template=await response.text();
     const payload=JSON.stringify(paper).replaceAll('<','\\u003c').replaceAll('>','\\u003e').replaceAll('&','\\u0026');
     const html=template.replace('__IPDF_PAYLOAD__',()=>payload);
-    location.assign(URL.createObjectURL(new Blob([html],{type:'text/html'})));
+    const frame=document.createElement('iframe');
+    frame.title=paper.meta.title || 'iPDF reader';
+    frame.style.cssText='width:100%;height:calc(100dvh - 48px);border:0;display:block';
+    frame.src=URL.createObjectURL(new Blob([html],{type:'text/html'}));
+    const back=document.createElement('a');
+    back.href='./';back.textContent='← Open another paper';
+    back.style.cssText='display:block;padding:12px 20px;height:48px';
+    document.body.replaceChildren(back,frame);
   } catch(error) {status.textContent=error.message;}
 });
