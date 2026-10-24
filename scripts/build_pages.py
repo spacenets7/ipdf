@@ -23,7 +23,9 @@ def build():
         narration=[dict(section_id='welcome',page=1,script='Welcome to iPDF. This is an authored demonstration of the format. The original text stays at the center. Tap a term to learn its meaning. Open a flashcard to check your understanding. Each explanation keeps its source page and provenance. The viewer reads a finished document. It does not call a model. You can export the edition and read it elsewhere. That is the end of this short example. Bring your next paper when you are ready.',simpler_script='Welcome. iPDF is a paper with extra ways to learn. Tap words for meanings. Open cards for questions. Press play to listen. Everything in this example was written as a format guide. That is all for now.',generated_by=authored('narration'))],
         provenance=dict(model='authored demonstration',prompt_versions={},generated_at='2026-10-23T00:00:00Z')))
     html=export_html(paper)
-    (destination/'demo.html').write_text(html,encoding='utf-8')
+    # The hosted sample returns to Pages; portable editions retain their own navigation.
+    demo_html=html.replace('href="#" class="logo"','href="./" class="logo"',1)
+    (destination/'demo.html').write_text(demo_html,encoding='utf-8')
     (destination/'demo.ipdf.json').write_text(paper.model_dump_json(indent=2),encoding='utf-8')
     (destination/'viewer-template.html').write_text(html.replace(safe_json(paper),'__IPDF_PAYLOAD__'),encoding='utf-8')
     (destination/'.nojekyll').write_text('',encoding='utf-8')

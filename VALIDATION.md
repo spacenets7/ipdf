@@ -281,3 +281,6 @@ three-paper/three-level run or guaranteed overnight execution on free hosting.
   placeholder and reports bounded validation and recorded DEEP cost components.
   No agent transcript or DEV post was published. Challenge requirements, model
   license and partner-category wording were checked against their primary sources.
+- GitHub CI and Pages deployment succeeded for e3a3cbe. The published landing page
+  and interactive sample were opened in the browser; the sample glossary popover
+  displayed its authored provenance. The sample's logo returns to the Pages home.
