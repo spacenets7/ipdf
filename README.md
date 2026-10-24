@@ -19,12 +19,18 @@ The free service has temporary storage; export editions to retain them.
 
 
 **Public static reader:** [spacenets7.github.io/ipdf](https://spacenets7.github.io/ipdf/).
-Open an exported `.ipdf.json` file or explore the authored welcome demo. Files are
+Open an exported `.ipdf.json` file or explore the authored interactive sample
+(glossary, study cards and browser narration). The site includes a live format
+preview, a local JSON file picker and a downloadable sample. Files are
 read in the browser. GitHub Pages cannot run FastAPI, PDF ingestion or hosted
 generation; use the full app below for those features. API keys stay server-side.
 
 To rebuild the Pages viewer after changing render code, run
 `python scripts/build_pages.py` and commit `docs/`. Pages publishes `main:/docs`.
+
+The Week 3 write-up is in [SUBMISSION.md](SUBMISSION.md), with the video link left
+for the author to add. [SUBMISSION_NOTES.md](SUBMISSION_NOTES.md) contains the DEV
+publishing handoff. The post has not been published to DEV.
 
 ```sh
 python3.11 -m venv .venv

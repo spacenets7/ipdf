@@ -1,0 +1,134 @@
+{
+  "ipdf_version": "0.1",
+  "meta": {
+    "title": "Welcome to iPDF",
+    "authors": [
+      "iPDF"
+    ],
+    "source_url": "https://github.com/spacenets7/ipdf/blob/main/SPEC.md",
+    "level": "beginner",
+    "pages": 1,
+    "paper_id": "b0cbb7a252a3701005e372f5f6cd9217e36385d18526a071dd04a172e322bf0d",
+    "tts_provider": "browser",
+    "reader": {
+      "background": "",
+      "goal": "understand",
+      "minutes": 15,
+      "voice": "browser"
+    }
+  },
+  "sections": [
+    {
+      "id": "welcome",
+      "title": "A paper with more ways in",
+      "page": 1,
+      "text": "iPDF keeps the original paper at the center. A glossary explains unfamiliar terms. Flashcards let you check an idea and save it for later. Narration explains one section at a time, so you can listen while walking.\n\nProvenance records where a learning block came from: its source page, model and prompt version. The viewer reads the finished JSON and never calls an AI model. Generation happens separately in the full app.\n\nThis is an authored format demonstration, not generated research output. Tap glossary, flashcards or provenance in the text, open a study card, or press Listen to paper to try browser speech. No source table is included, so there is no chart."
+    }
+  ],
+  "glossary": [
+    {
+      "page": 1,
+      "generated_by": {
+        "plugin": "glossary",
+        "prompt_version": "authored-demo/0.2.0",
+        "model": "authored format demonstration",
+        "source_page": 1
+      },
+      "term": "glossary",
+      "definition": "A collection of explanations for terms used in the source text.",
+      "section_id": "welcome"
+    },
+    {
+      "page": 1,
+      "generated_by": {
+        "plugin": "glossary",
+        "prompt_version": "authored-demo/0.2.0",
+        "model": "authored format demonstration",
+        "source_page": 1
+      },
+      "term": "flashcards",
+      "definition": "Questions and answers that help you check understanding and revisit an idea.",
+      "section_id": "welcome"
+    },
+    {
+      "page": 1,
+      "generated_by": {
+        "plugin": "glossary",
+        "prompt_version": "authored-demo/0.2.0",
+        "model": "authored format demonstration",
+        "source_page": 1
+      },
+      "term": "provenance",
+      "definition": "The source page, model and prompt version attached to a learning block.",
+      "section_id": "welcome"
+    }
+  ],
+  "flashcards": [
+    {
+      "page": 1,
+      "generated_by": {
+        "plugin": "flashcards",
+        "prompt_version": "authored-demo/0.2.0",
+        "model": "authored format demonstration",
+        "source_page": 1
+      },
+      "id": "demo-card",
+      "front": "Does the viewer call an AI model?",
+      "back": "No. It renders the completed iPDF JSON. Generation runs separately in the full application.",
+      "section_id": "welcome",
+      "choices": [
+        "Yes, for every page",
+        "No, it only reads the JSON"
+      ],
+      "correct_index": 1
+    },
+    {
+      "page": 1,
+      "generated_by": {
+        "plugin": "flashcards",
+        "prompt_version": "authored-demo/0.2.0",
+        "model": "authored format demonstration",
+        "source_page": 1
+      },
+      "id": "demo-evidence",
+      "front": "Why is there no chart in this sample?",
+      "back": "There is no source table. Charts must use numbers parsed from the original paper tables; missing evidence means no chart.",
+      "section_id": "welcome",
+      "choices": [],
+      "correct_index": null
+    }
+  ],
+  "charts": [],
+  "narration": [
+    {
+      "page": 1,
+      "generated_by": {
+        "plugin": "narration",
+        "prompt_version": "authored-demo/0.2.0",
+        "model": "authored format demonstration",
+        "source_page": 1
+      },
+      "section_id": "welcome",
+      "script": "Welcome to iPDF. This is an authored demonstration of the format. The original text stays at the center. Tap a term to learn its meaning. Open a flashcard to check your understanding. Each explanation keeps its source page and provenance. The viewer reads a finished document. It does not call a model. You can export the edition and read it elsewhere. That is the end of this short example. Bring your next paper when you are ready.",
+      "simpler_script": "Welcome. iPDF is a paper with extra ways to learn. Tap words for meanings. Open cards for questions. Press play to listen. Everything in this example was written as a format guide. That is all for now.",
+      "audio_url": null,
+      "simpler_audio_url": null
+    }
+  ],
+  "provenance": {
+    "model": "authored demonstration",
+    "prompt_versions": {},
+    "generated_at": "2026-10-23T00:00:00Z",
+    "backends": [],
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "recorded_cost_usd": 0.0,
+    "prices_configured": false
+  },
+  "tables": [],
+  "figures": [],
+  "issues": [],
+  "assets": {
+    "original_pdf": null
+  }
+}

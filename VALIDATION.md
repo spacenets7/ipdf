@@ -261,3 +261,23 @@ three-paper/three-level run or guaranteed overnight execution on free hosting.
   also follow Joe Attardi's author-written guidance at
   https://dev.to/joeattardi/beyond-breakpoints-leveraging-user-preference-media-queries-in-css-5el0
   (no comments were present on that article when read).
+
+## GitHub Pages and submission preparation — 24 October 2026
+
+- Rebuilt the static landing page with an interactive glossary preview, expandable
+  study card, feature/workflow sections and a dedicated local-file opening panel.
+  The full application and browser reader are explicitly distinguished.
+- The authored, schema-validated sample now includes three glossary entries, two
+  flashcards and one narration segment. Its provenance labels it as authored; no
+  chart data or generated research results were invented for the sample.
+- Browser checks passed for the preview term/card, missing-file feedback, invalid
+  JSON feedback, opening the downloadable sample, saving a term to the deck and
+  browser narration (PLAYING / BROWSER VOICE). No console errors were reported.
+- Landing page document/client widths matched at desktop and 390px emulation; no
+  horizontal overflow remained after containing a decorative glow.
+- All 51 mocked tests pass. JavaScript syntax checks and the static build pass.
+  No hosted inference or ElevenLabs credits were used for these changes.
+- SUBMISSION.md follows the supplied eight-section template, includes the video
+  placeholder and reports bounded validation and recorded DEEP cost components.
+  No agent transcript or DEV post was published. Challenge requirements, model
+  license and partner-category wording were checked against their primary sources.
